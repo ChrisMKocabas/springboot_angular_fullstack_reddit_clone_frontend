@@ -54,12 +54,14 @@ export class VoteButtonComponent implements OnInit {
 
   private vote() {
     this.votePayload.postId = this.post.id;
-    this.voteService.vote(this.votePayload).subscribe(() => {
+    this.voteService.vote(this.votePayload).subscribe({
+      next: () => {
       this.updateVoteDetails();
-    }, error => {
+    },
+      error: error => {
       this.toastr.error(error.error.message);
-      throwError(error);
-    });
+      throw error;
+    }});
   }
 
   private updateVoteDetails() {

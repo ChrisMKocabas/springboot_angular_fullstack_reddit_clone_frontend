@@ -1,29 +1,51 @@
 <!-- Display Posts-->
-<div class="row post" *ngFor="let post of posts">
-  <app-vote-button [post]="post"></app-vote-button>
-  <!-- Section to Display Post Information-->
-  <div class="col-md-11">
-    <span class="subreddit-info">
-      <span class="subreddit-text"><a class="posturl" routerLink="">{{post.subredditName}}</a></span>
-      <span> . Posted by <a class="username" routerLink="/user/{{post.userName}}">{{post.userName}}</a></span>
-      <span> . {{post.duration}}</span>
-    </span>
-    <hr />
-    <div class="post-title">
-      <a class="postname" href="{{post.url}}">{{post.postName}}</a>
+<div class="row post post-container" *ngFor="let post of posts">
+  <div class="d-flex flew-column align-items-center">
+    <app-vote-button [post]="post"></app-vote-button>
+    <!-- Section to Display Post Information-->
+    <div class="col-md-11">
+      <span class="subreddit-info">
+        <span class="subreddit-text"
+          ><a class="posturl" routerLink="">{{ post.subredditName }}</a></span
+        >
+        <span>
+          . Posted by
+          <a class="username" routerLink="/user/{{ post.userName }}">{{
+            post.userName === currentUser ? "you" : post.userName
+          }}</a></span
+        >
+        <span> . {{ post.duration }}</span>
+
+        <button
+          *ngIf="currentUser === post.userName"
+          class="toggleNotifications btn btn-outline-warning btn-sm float-right"
+          (click)="toggleNotifications(post.id, !post.notificationStatus)"
+        >
+          <fa-icon
+            [icon]="post.notificationStatus ? faBell : faBellSlash"
+          ></fa-icon>
+          {{
+            post.notificationStatus ? "Notifications on" : "Notifications off"
+          }}
+        </button>
+      </span>
+      <hr />
+      <div class="post-title">
+        <a class="postname" href="{{ '/view-post/' + post.id }}">{{
+          post.postName
+        }}</a>
+      </div>
+      <div>
+        <p class="post-text" [innerHtml]="post.description"></p>
+      </div>
+      <hr />
+      <span>
+        <a class="btnCommments" role="button">
+          <fa-icon [icon]="faComments"></fa-icon>
+          Comments({{ post.commentCount }})
+        </a>
+        <button class="login" (click)="goToPost(post.id)">Read Post</button>
+      </span>
     </div>
-    <div>
-      <p class="post-text" [innerHtml]="post.description"></p>
-    </div>
-    <hr />
-    <span>
-      <a class="btnCommments" role="button">
-        <fa-icon [icon]="faComments"></fa-icon>
-        Comments({{post.commentCount}})
-      </a>
-      <button class="login" (click)="goToPost(post.id)">
-        Read Post
-      </button>
-    </span>
   </div>
 </div>

@@ -10,6 +10,7 @@ export class PostModel {
   duration: string;
   upVote: boolean;
   downVote: boolean;
+  notificationStatus :boolean ;
 
   constructor() {
     this.id = 0;
@@ -23,5 +24,6 @@ export class PostModel {
     this.duration = '';
     this.upVote = false;
     this.downVote = false;
+    this.notificationStatus = true;
   }
 }

@@ -29,7 +29,9 @@ export class ViewPostComponent implements OnInit {
     });
     this.commentPayload = {
       text: '',
-      postId: this.postId
+      postId: this.postId,
+      userName:'',
+      duration: ''
     };
   }
 

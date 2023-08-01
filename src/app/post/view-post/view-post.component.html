@@ -19,7 +19,10 @@
             </span>
           </span>
           <hr />
-          <a routerLink="post.url" class="post-title">{{ post.postName }}</a>
+          <a [routerLink]="'/view-post/' + post.id" class="post-title">{{
+            post.postName
+          }}</a>
+
           <div>
             <p class="post-text" [innerHtml]="post.description"></p>
           </div>
@@ -38,8 +41,8 @@
           <div style="margin-top: 60px" *ngFor="let comment of comments">
             <div class="comment">
               <div class="username">
-                <a routerLink="/user/comment.username">{{
-                  comment.username
+                <a routerLink="{{ comment.userName }}">{{
+                  comment.userName
                 }}</a>
               </div>
               <div>
