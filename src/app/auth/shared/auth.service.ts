@@ -5,7 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { LocalStorageService } from 'ngx-webstorage';
 import { LoginRequestPayload } from '../login/login-request.payload';
 import { LoginResponse } from '../login/login-response.payload';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,78 +13,119 @@ import { map, tap } from 'rxjs/operators';
 export class AuthService {
 
   @Output() loggedIn: EventEmitter<boolean> = new EventEmitter();
-  @Output() username: EventEmitter<string> = new EventEmitter();
+  @Output() userName: EventEmitter<string> = new EventEmitter();
 
-  refreshTokenPayload = {
-    refreshToken: this.getRefreshToken(),
-    username: this.getUserName()
-  }
-
-  constructor(private httpClient: HttpClient,
-    private localStorage: LocalStorageService) {
-  }
+  constructor(private httpClient: HttpClient, private localStorage: LocalStorageService) {}
 
   signup(signupRequestPayload: SignupRequestPayload): Observable<any> {
     return this.httpClient.post('http://localhost:8080/api/v1/auth/register', signupRequestPayload, { responseType: 'text' });
   }
 
   login(loginRequestPayload: LoginRequestPayload): Observable<boolean> {
-    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/v1/auth/login',
-      loginRequestPayload).pipe(map(data => {
-        this.localStorage.store('authenticationToken', data.authenticationToken);
-        this.localStorage.store('username', data.username);
-        this.localStorage.store('refreshToken', data.refreshToken);
-        this.localStorage.store('expiresAt', data.expirationDate);
-
-        this.loggedIn.emit(true);
-        this.username.emit(data.username);
-        return true;
-      }));
+    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/v1/auth/login', loginRequestPayload)
+      .pipe(
+        tap(data => {
+          this.storeAuthData(data);
+        }),
+        map(() => true),
+        catchError((error) => {
+          console.error('Error during login:', error);
+          return throwError(error);
+        })
+      );
   }
 
-  getJwtToken() {
+  getJwtToken(): string | null {
     return this.localStorage.retrieve('authenticationToken');
   }
 
-  refreshToken() {
-    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/v1/auth/refresh/token',
-      this.refreshTokenPayload)
-      .pipe(tap(response => {
-        this.localStorage.clear('authenticationToken');
-        this.localStorage.clear('expiresAt');
-        this.localStorage.clear('refreshToken');
-
-        this.localStorage.store('authenticationToken',
-          response.authenticationToken);
-        this.localStorage.store('refreshToken', response.refreshToken);
-        this.localStorage.store('expiresAt', response.expirationDate);
-      }));
+  refreshToken(): Observable<LoginResponse> {
+    const refreshTokenPayload = {
+      refreshToken: this.getRefreshToken(),
+      username: this.getUserName()
+    };
+console.log(refreshTokenPayload)
+    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/v1/auth/refresh/token', refreshTokenPayload)
+      .pipe(
+        tap(response => {
+          this.storeAuthData(response);
+          console.log(`response: + ${response}`)
+        }),
+        catchError((error) => {
+          console.error('Error during token refresh:', error);
+          return throwError(error);
+        })
+      );
   }
 
   logout() {
-    this.httpClient.post('http://localhost:8080/api/v1/auth/logout', this.refreshTokenPayload,
-      { responseType: 'text' })
-      .subscribe({
-          next : data=>{console.log(data)},
-          error(err) {
-            throw err
-          },
-          })
+    const refreshToken = this.getRefreshToken();
+    const username = this.getUserName();
 
+    if (refreshToken && username) {
+      this.httpClient.post('http://localhost:8080/api/v1/auth/logout', { refreshToken, username }, { responseType: 'text' })
+        .subscribe({
+          next: data => {
+            console.log(data);
+          },
+          error(err) {
+            console.error('Error during logout:', err);
+            throw err;
+          },
+        });
+    }
+
+    this.clearAuthData();
+  }
+
+  getUserName(): string | '' {
+    return this.localStorage.retrieve('username');
+  }
+
+  getRefreshToken(): string | null {
+    return this.localStorage.retrieve('refreshToken');
+  }
+
+  checkExpiry(): boolean {
+    const expirationDate = this.localStorage.retrieve('expiresAt');
+    if (!expirationDate) {
+      // If there is no expiration date stored, consider the token as expired
+      return true;
+    }
+
+    const now = new Date().getTime() / 1000; // Convert milliseconds to seconds
+    const expirationTime = parseFloat(expirationDate);
+    const bufferTimeInSeconds = 1; // Adjust the buffer time as needed
+
+    return expirationTime - bufferTimeInSeconds <= now;
+  }
+
+  isLoggedIn(): boolean {
+    return this.getJwtToken() !== null;
+  }
+
+  private storeAuthData(data: LoginResponse) {
+    this.localStorage.clear('authenticationToken');
+    this.localStorage.clear('expiresAt');
+    this.localStorage.clear('refreshToken');
+    this.localStorage.clear('username');
+
+    this.localStorage.store('authenticationToken', data.authenticationToken);
+    this.localStorage.store('refreshToken', data.refreshToken);
+    this.localStorage.store('expiresAt', data.expirationDate);
+    this.localStorage.store('username', data.username);
+
+    this.loggedIn.emit(true);
+    this.userName.emit(data.username);
+  }
+
+  private clearAuthData() {
     this.localStorage.clear('authenticationToken');
     this.localStorage.clear('username');
     this.localStorage.clear('refreshToken');
     this.localStorage.clear('expiresAt');
-  }
 
-  getUserName() {
-    return this.localStorage.retrieve('username');
-  }
-  getRefreshToken() {
-    return this.localStorage.retrieve('refreshToken');
-  }
-
-  isLoggedIn(): boolean {
-    return this.getJwtToken() != null;
+    this.loggedIn.emit(false);
+    this.userName.emit('');
   }
 }

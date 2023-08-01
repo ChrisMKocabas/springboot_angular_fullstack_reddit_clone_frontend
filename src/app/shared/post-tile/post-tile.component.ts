@@ -25,12 +25,16 @@ export class PostTileComponent implements OnInit {
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
       this.currentUser = this.authService.getUserName();
+    } else {
+      this.currentUser = ''; // Set currentUser to an empty string if the user is not logged in
     }
 
   }
 
   goToPost(id: number): void {
+
     this.router.navigateByUrl('/view-post/' + id);
+
   }
 
   toggleNotifications(id: number, newStatus: boolean): void {

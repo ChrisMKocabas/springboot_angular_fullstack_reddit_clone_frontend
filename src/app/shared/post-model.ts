@@ -13,7 +13,7 @@ export class PostModel {
   notificationStatus :boolean ;
 
   constructor() {
-    this.id = 0;
+    this.id = 1;
     this.postName = '';
     this.url = '';
     this.description = '';

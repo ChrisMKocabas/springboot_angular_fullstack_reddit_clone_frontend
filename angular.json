@@ -94,7 +94,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              "https://cdn.tiny.cloud/1/YOUR_TINYMCE_API_KEY/tinymce/5/tinymce.min.js"
             ]
 
           }
