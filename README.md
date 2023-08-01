@@ -1,5 +1,8 @@
 # RedditcloneFrontend
 
+<img width="1665" alt="Screenshot 2023-08-01 at 11 56 26 AM" src="https://github.com/ChrisMKocabas/springboot_angular_fullstack_reddit_clone_frontend/assets/75855099/7c84447b-98f0-451d-a992-17bbc0b35d3e">
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.3.
 
 ## Development server
