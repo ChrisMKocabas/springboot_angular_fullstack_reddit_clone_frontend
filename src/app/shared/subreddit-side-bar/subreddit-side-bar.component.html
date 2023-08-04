@@ -3,7 +3,7 @@
   <hr />
   <span *ngFor="let subreddit of subreddits">
     <span class="subreddit-text"
-      ><a href="/view-subreddit/{{ subreddit.id }}">{{
+      ><a routerLink="/view-subreddit/{{ subreddit.id }}">{{
         subreddit.name
       }}</a></span
     >
