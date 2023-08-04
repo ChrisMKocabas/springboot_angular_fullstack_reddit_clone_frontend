@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../auth/shared/auth.service';
 import { faBell, faBellSlash } from '@fortawesome/free-solid-svg-icons';
 import { PostService } from '../post.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-post-tile',
   templateUrl: './post-tile.component.html',
@@ -20,7 +21,8 @@ export class PostTileComponent implements OnInit {
   faBellSlash = faBellSlash;
   faComments = faComments;
 
-  constructor(private router: Router, private authService: AuthService, private postService: PostService) { }
+  constructor(private router: Router, private authService: AuthService,
+    private postService: PostService,private toastr: ToastrService) { }
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn()) {
@@ -44,10 +46,16 @@ export class PostTileComponent implements OnInit {
         const postToUpdate = this.posts?.find(post => post.id === id);
         if (postToUpdate) {
           postToUpdate.notificationStatus = response;
+          if (response) {
+            this.toastr.success('Post notifications on');
+          } else {
+            this.toastr.warning('Post notifications off');
+          }
         }
+
       },
       error: (error) => {
-        console.error('Error toggling notifications:', error);
+        this.toastr.success(`Error toggling notifications.`);
       }
   });
   }

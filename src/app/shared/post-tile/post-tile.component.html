@@ -22,15 +22,13 @@
 
         <button
           *ngIf="currentUser === post.userName"
-          class="toggleNotifications btn btn-outline-warning btn-sm float-right"
+          class="toggleNotifications btn btn-outline btn-sm float-right"
           (click)="toggleNotifications(post.id, !post.notificationStatus)"
         >
           <fa-icon
             [icon]="post.notificationStatus ? faBell : faBellSlash"
           ></fa-icon>
-          {{
-            post.notificationStatus ? "Notifications on" : "Notifications off"
-          }}
+          <!-- {{ post.notificationStatus ? "On" : "Off" }} -->
         </button>
       </span>
       <hr />
