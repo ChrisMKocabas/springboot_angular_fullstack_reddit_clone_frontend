@@ -52,7 +52,7 @@ export class SignupComponent implements OnInit {
         },
       error: (err) => {
         console.log(err);
-        this.toastr.error('Registration Failed! Please try again');
+        this.toastr.error(`Registration Failed! ${err.error}`);
       },
       })
   }

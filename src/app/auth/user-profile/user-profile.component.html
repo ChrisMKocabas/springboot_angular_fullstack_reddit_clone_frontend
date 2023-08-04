@@ -1,5 +1,5 @@
 <div class="container">
-  <div>
+  <div *ngIf="currentUsername === name">
     Welcome <b>{{ name }}</b
     >.<br />
     You have posted <b>{{ postLength }}</b> time(s) and commented
@@ -7,14 +7,18 @@
     history below.
   </div>
   <hr />
-  <div>Your Posts:</div>
+  <div *ngIf="currentUsername === name">Your Posts:</div>
+  <div *ngIf="currentUsername !== name">{{ name }}'s Posts:</div>
   <app-post-tile [posts]="posts"></app-post-tile>
   <hr />
-  <div>Your Comments:</div>
+  <div *ngIf="currentUsername === name">Your Comments:</div>
+  <div *ngIf="currentUsername !== name">{{ name }}'s Comments:</div>
   <div *ngFor="let comment of comments">
     <div class="comment">
       <div class="username">
-        <a routerLink="/user/comment.username">{{ comment.userName }}</a>
+        <a routerLink="{{ '/view-post/' + comment.postId }}">{{
+          comment.userName
+        }}</a>
       </div>
       <div>
         <p>{{ comment.duration }}</p>

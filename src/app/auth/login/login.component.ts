@@ -4,7 +4,7 @@ import { LoginRequestPayload } from './login-request.payload';
 import { AuthService } from '../shared/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { throwError } from 'rxjs';
+import { LoginResponse } from './login-response.payload';
 
 @Component({
   selector: 'app-login',
@@ -39,8 +39,8 @@ export class LoginComponent implements OnInit {
       .subscribe(params => {
         if (params['registered'] !== undefined && params['registered'] === 'true') {
           this.toastr.success('Signup Successful');
-          this.registerSuccessMessage = 'Please Check your inbox for activation email '
-            + 'activate your account before you Login!';
+          this.toastr.warning('Please Check your inbox for activation email '
+            + 'activate your account before you Login!');
         }
       });
   }
@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
         },
         error: (err)=> {
           this.isError = true;
-          throw err
+          this.toastr.error(`${err.error.username}`);
         },
         })
 

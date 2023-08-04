@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommentService } from 'src/app/comment/comment.service';
 import { PostModel } from 'src/app/shared/post-model';
 import { CommentPayload } from 'src/app/comment/comment.payload';
+import { AuthService } from '../shared/auth.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -16,9 +17,10 @@ export class UserProfileComponent implements OnInit {
   comments: CommentPayload[] = [];
   postLength: number =-999;
   commentLength: number =-999;
+  currentUsername: string = ''
 
   constructor(private activatedRoute: ActivatedRoute, private postService: PostService,
-    private commentService: CommentService) {
+    private commentService: CommentService, private authService: AuthService) {
     this.name = this.activatedRoute.snapshot.params['name'];
 
     this.postService.getAllPostsByUser(this.name).subscribe(data => {
@@ -32,6 +34,11 @@ export class UserProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+        if (this.authService.isLoggedIn()) {
+      this.currentUsername = this.authService.getUserName();
+    } else {
+      this.currentUsername = '';
+    }
   }
 
 }

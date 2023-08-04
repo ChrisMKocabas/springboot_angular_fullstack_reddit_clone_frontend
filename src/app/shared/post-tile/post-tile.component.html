@@ -10,10 +10,14 @@
         >
         <span>
           . Posted by
-          <a class="username" routerLink="/user/{{ post.userName }}">{{
-            post.userName === currentUser ? "you" : post.userName
-          }}</a></span
-        >
+          <a
+            *ngIf="currentUser != ''"
+            class="username"
+            routerLink="/user-profile/{{ post.userName }}"
+            >{{ post.userName === currentUser ? "you" : post.userName }}</a
+          >
+          <a *ngIf="currentUser == ''">{{ post.userName }}</a>
+        </span>
         <span> . {{ post.duration }}</span>
 
         <button

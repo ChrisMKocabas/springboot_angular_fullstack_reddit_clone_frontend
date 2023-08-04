@@ -6,6 +6,7 @@ import { throwError } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CommentPayload } from 'src/app/comment/comment.payload';
 import { CommentService } from 'src/app/comment/comment.service';
+import { AuthService } from 'src/app/auth/shared/auth.service';
 
 @Component({
   selector: 'app-view-post',
@@ -19,10 +20,12 @@ export class ViewPostComponent implements OnInit {
   commentForm: FormGroup;
   commentPayload: CommentPayload;
   comments: CommentPayload[] =[];
+  isLoggedIn: boolean;
 
   constructor(private postService: PostService, private activateRoute: ActivatedRoute,
-    private commentService: CommentService, private router: Router) {
+    private commentService: CommentService, private authService:AuthService) {
     this.postId = this.activateRoute.snapshot.params['id'];
+    this.isLoggedIn = this.authService.isLoggedIn();
 
     this.commentForm = new FormGroup({
       text: new FormControl('', Validators.required)
@@ -38,6 +41,7 @@ export class ViewPostComponent implements OnInit {
   ngOnInit(): void {
     this.getPostById();
     this.getCommentsForPost();
+    this.authService.loggedIn.subscribe((data: boolean) => this.isLoggedIn = data);
   }
 
   postComment() {

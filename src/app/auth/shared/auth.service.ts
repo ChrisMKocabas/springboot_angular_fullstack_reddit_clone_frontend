@@ -6,6 +6,7 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { LoginRequestPayload } from '../login/login-request.payload';
 import { LoginResponse } from '../login/login-response.payload';
 import { map, tap, catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +19,11 @@ export class AuthService {
   constructor(private httpClient: HttpClient, private localStorage: LocalStorageService) {}
 
   signup(signupRequestPayload: SignupRequestPayload): Observable<any> {
-    return this.httpClient.post('http://localhost:8080/api/v1/auth/register', signupRequestPayload, { responseType: 'text' });
+    return this.httpClient.post(`${environment.API_BASE_URL}/auth/register`, signupRequestPayload, { responseType: 'text' });
   }
 
   login(loginRequestPayload: LoginRequestPayload): Observable<boolean> {
-    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/v1/auth/login', loginRequestPayload)
+    return this.httpClient.post<LoginResponse>(`${environment.API_BASE_URL}/auth/login`, loginRequestPayload)
       .pipe(
         tap(data => {
           this.storeAuthData(data);
@@ -45,7 +46,7 @@ export class AuthService {
       username: this.getUserName()
     };
 console.log(refreshTokenPayload)
-    return this.httpClient.post<LoginResponse>('http://localhost:8080/api/v1/auth/refresh/token', refreshTokenPayload)
+    return this.httpClient.post<LoginResponse>(`${environment.API_BASE_URL}/auth/refresh/token`, refreshTokenPayload)
       .pipe(
         tap(response => {
           this.storeAuthData(response);
@@ -63,7 +64,7 @@ console.log(refreshTokenPayload)
     const username = this.getUserName();
 
     if (refreshToken && username) {
-      this.httpClient.post('http://localhost:8080/api/v1/auth/logout', { refreshToken, username }, { responseType: 'text' })
+      this.httpClient.post(`${environment.API_BASE_URL}/auth/logout`, { refreshToken, username }, { responseType: 'text' })
         .subscribe({
           next: data => {
             console.log(data);

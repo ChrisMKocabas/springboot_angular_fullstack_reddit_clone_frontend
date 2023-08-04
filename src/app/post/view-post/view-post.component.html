@@ -15,7 +15,11 @@
               . Posted
               <span> {{ post.duration }} </span>
               by
-              <a class="username" href="">{{ post.userName }}</a>
+              <a
+                class="username"
+                routerLink="/user-profile/{{ post.userName }}"
+                >{{ post.userName }}</a
+              >
             </span>
           </span>
           <hr />
@@ -26,8 +30,13 @@
           <div>
             <p class="post-text" [innerHtml]="post.description"></p>
           </div>
+
           <div class="post-comment">
-            <form [formGroup]="commentForm" (ngSubmit)="postComment()">
+            <form
+              *ngIf="isLoggedIn"
+              [formGroup]="commentForm"
+              (ngSubmit)="postComment()"
+            >
               <div class="form-group">
                 <textarea
                   class="form-control"
@@ -37,11 +46,13 @@
               </div>
               <button type="submit" class="login float-right">Comment</button>
             </form>
+
+            <p *ngIf="!isLoggedIn">"Please log in to comment on posts."</p>
           </div>
           <div style="margin-top: 60px" *ngFor="let comment of comments">
             <div class="comment">
               <div class="username">
-                <a routerLink="{{ comment.userName }}">{{
+                <a routerLink="/user-profile/{{ comment.userName }}">{{
                   comment.userName
                 }}</a>
               </div>
