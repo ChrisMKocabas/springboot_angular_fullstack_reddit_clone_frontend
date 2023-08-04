@@ -19,7 +19,7 @@ jobs:
         with:
           submodules: true
       - name: Set Environment Variables
-        run: echo "API_BASE_URL=http://localhost:8080/api/v1" >> $GITHUB_ENV
+        run: echo "API_BASE_URL=https://reddit-backend-chris.onrender.com/api/v1" >> $GITHUB_ENV
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
