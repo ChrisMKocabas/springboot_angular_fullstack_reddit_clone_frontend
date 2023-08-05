@@ -41,6 +41,11 @@ export class LoginComponent implements OnInit {
           this.toastr.warning('Please Check your inbox for activation email '
             + 'activate your account before you Login!');
         }
+        const redirectionFlag = params['X-Redirection-Flag'];
+        if (redirectionFlag === 'true') {
+          // Handle redirection
+          this.toastr.success('Account successfully activated!');
+        }
       });
   }
 
