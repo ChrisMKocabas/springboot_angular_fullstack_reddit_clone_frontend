@@ -27,8 +27,20 @@
             post.postName
           }}</a>
 
-          <div>
-            <p class="post-text" [innerHtml]="post.description"></p>
+          <!-- Limit description to 5 lines and add a "Show more" button -->
+          <div class="post-text" [class.expanded]="post.isExpanded">
+            <p [innerHtml]="post.description"></p>
+          </div>
+          <div
+            *ngIf="post.description.length > 1000"
+            class="show-more-button-container"
+          >
+            <button
+              class="show-more-button float-left"
+              (click)="toggleDescription(post)"
+            >
+              {{ !post.isExpanded ? "Show more..." : " ...show less" }}
+            </button>
           </div>
 
           <div class="post-comment">

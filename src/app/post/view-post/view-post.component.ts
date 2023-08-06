@@ -72,5 +72,9 @@ export class ViewPostComponent implements OnInit {
       throwError(()=>error);
     });
   }
-
+  
+  // Add this property and method to handle the description expansion
+  toggleDescription(post: PostModel): void {
+    post.isExpanded = !post.isExpanded;
+  }
 }
