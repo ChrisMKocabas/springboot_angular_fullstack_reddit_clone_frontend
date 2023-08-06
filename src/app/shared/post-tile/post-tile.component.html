@@ -1,8 +1,8 @@
-<!-- Display Posts-->
+<!-- Display Posts -->
 <div class="row post post-container" *ngFor="let post of posts">
   <div class="d-flex flew-column align-items-center">
     <app-vote-button class="align-self-start" [post]="post"></app-vote-button>
-    <!-- Section to Display Post Information-->
+    <!-- Section to Display Post Information -->
     <div class="col-md-11">
       <span class="subreddit-info">
         <span class="subreddit-text"
@@ -38,9 +38,31 @@
         }}</a>
       </div>
       <div>
-        <p class="post-text" [innerHtml]="post.description"></p>
+        <!-- Limit description to 5 lines and add a "Show more" button -->
+        <div class="post-text" [class.expanded]="post.isExpanded">
+          <p [innerHtml]="post.description"></p>
+        </div>
+        <div
+          *ngIf="post.description.length > 1000"
+          class="show-more-button-container"
+        >
+          <button
+            class="show-more-button float-left"
+            (click)="toggleDescription(post)"
+          >
+            {{ !post.isExpanded ? "Show more..." : " ...show less" }}
+          </button>
+        </div>
       </div>
-      <hr />
+      <hr
+        class="{{
+          post.description.length > 1000
+            ? post.isExpanded
+              ? 'mt-5'
+              : 'mt-4'
+            : 'mt-0'
+        }}"
+      />
       <span>
         <a class="btnCommments" role="button">
           <fa-icon [icon]="faComments"></fa-icon>

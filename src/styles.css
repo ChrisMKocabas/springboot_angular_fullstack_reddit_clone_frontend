@@ -32,3 +32,33 @@ input.ng-invalid.ng-touched {
   padding: 3px 16px;
   opacity: 1;
 }
+
+/* Limit the description to 5 lines and add an ellipsis for overflow */
+.post-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 10;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Style the "Show more" button */
+.show-more-button-container {
+  text-align: center;
+
+}
+
+.show-more-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+  text-decoration: none;
+}
+
+/* Display the full description when expanded */
+.post-text.expanded {
+  display: block;
+  -webkit-line-clamp: initial;
+  overflow: visible;
+}

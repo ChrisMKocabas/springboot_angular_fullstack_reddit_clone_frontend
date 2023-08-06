@@ -11,6 +11,7 @@ export class PostModel {
   upVote: boolean;
   downVote: boolean;
   notificationStatus :boolean ;
+  isExpanded: boolean;
 
   constructor() {
     this.id = 1;
@@ -25,5 +26,6 @@ export class PostModel {
     this.upVote = false;
     this.downVote = false;
     this.notificationStatus = true;
+    this.isExpanded = false;
   }
 }
